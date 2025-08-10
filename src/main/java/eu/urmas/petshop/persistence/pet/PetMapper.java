@@ -12,17 +12,26 @@ public interface PetMapper {
 
     @Mapping(source = "petType", target = "petType")
     @Mapping(source = "name", target = "petName")
-    @Mapping(target = "price", ignore = true)
+    @Mapping(source = "price", target = "price")
     @Mapping(source = "birthDate", target = "birthDate")
     PetDto toPetDto(Pet pet);
 
-    @InheritInverseConfiguration(name = "toPetDto")
+    @Mapping(source = "petType", target = "petType")
+    @Mapping(source = "name", target = "petName")
+    @Mapping(source = "price", target = "price")
+    @Mapping(source = "birthDate", target = "birthDate")
     @Mapping(source = "id", target = "petId")
     PetInfo toPetInfo(Pet pet);
 
     List<PetInfo> toPetInfos(List<Pet> pets);
-    
+
+    @Mapping(source = "petName", target = "name")
+    @Mapping(source = "birthDate", target = "birthDate")
+    @Mapping(source = "price", target = "price")
+    @Mapping(target = "petType", ignore = true)
+    Pet toPet(PetDto petDto);
+
     default String map(PetType petType) {
-        return petType != null ? petType.getName() : null;
+        return petType != null ? petType.getTypeName() : null;
     }
 }

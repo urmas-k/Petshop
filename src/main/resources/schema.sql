@@ -19,6 +19,7 @@ CREATE TABLE pet
     pet_type_id int                                             NOT NULL,
     name        varchar(100)                                    NOT NULL,
     birth_date  date                                            NULL,
+    price       decimal(10, 2)                                  NULL, -- added to match entity
     CONSTRAINT pet_pk PRIMARY KEY (id)
 );
 
@@ -61,4 +62,3 @@ ALTER TABLE sale
             REFERENCES pet (id);
 
 -- End of file.
-

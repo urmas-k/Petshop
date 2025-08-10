@@ -19,6 +19,6 @@ public class PetType {
     @Size(max = 50)
     @NotNull
     @Column(name = "NAME", nullable = false, length = 50)
-    private String name;
+    private String typeName;
 
 }

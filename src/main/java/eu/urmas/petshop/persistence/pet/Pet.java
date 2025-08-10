@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -32,4 +33,6 @@ public class Pet {
     @Column(name = "BIRTH_DATE")
     private LocalDate birthDate;
 
+    @Column(name = "PRICE")
+    private BigDecimal price;
 }

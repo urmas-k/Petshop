@@ -14,8 +14,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PetDto implements Serializable {
+
+    @NotNull
+    @Size(max = 50)
     private String petType;
+
+    @NotNull
+    @Size(max = 100)
     private String petName;
     private LocalDate birthDate;
+
+    @NotNull
     private BigDecimal price;
 }

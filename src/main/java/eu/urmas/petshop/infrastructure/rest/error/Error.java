@@ -5,8 +5,9 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum ErrorCode {
-    NO_PET_EXISTS("Pet does not exist");
-
+public enum Error {
+    NO_PET_EXISTS("Pet does not exist"),
+    NO_PET_TYPE_EXISTS("PetType not found");
+   
     private final String message;
 }
