@@ -1,4 +1,4 @@
-package eu.urmas.petshop.persistence.pet;
+package eu.urmas.petshop.controller.pet.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -1,13 +1,16 @@
 package eu.urmas.petshop.service.pet;
 
+import eu.urmas.petshop.controller.pet.dto.PetInfo;
 import eu.urmas.petshop.infrastructure.rest.error.ErrorCode; // was: Error
 import eu.urmas.petshop.infrastructure.rest.exception.DataNotFoundException;
 import eu.urmas.petshop.persistence.pet.Pet;
-import eu.urmas.petshop.persistence.pet.PetDto;
+import eu.urmas.petshop.controller.pet.dto.PetDto;
 import eu.urmas.petshop.persistence.pet.PetMapper;
 import eu.urmas.petshop.persistence.pet.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,5 +23,10 @@ public class PetService {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NO_PET_EXISTS.getMessage()));
         return petMapper.toPetDto(pet);
+    }
+
+    public List<PetInfo> findAllPets() {
+        List<Pet> pets = petRepository.findAll();
+      return petMapper.toPetInfos(pets);
     }
 }
