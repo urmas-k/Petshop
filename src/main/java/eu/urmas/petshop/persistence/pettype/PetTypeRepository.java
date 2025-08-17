@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface PetTypeRepository extends Repository<PetType, Integer> {
 
     @Query("select p from PetType p where upper(p.typeName) = upper(:typeName)")
-    Optional<PetType> findPetTypeBy(String typeName);
+    Optional<PetType> findPetTypeBy(@Param("typeName") String typeName);
 }

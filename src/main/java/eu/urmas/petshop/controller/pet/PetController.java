@@ -44,4 +44,19 @@ public class PetController {
         return petService.findAllPets();
     }
 
+    @PutMapping("/pet/{petId}")
+    @Operation(summary = "Updates a pet", description = "if there are any null value fields, those wont`t get updated")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "Invalid request body: payload validation failed",
+                    content = @Content(schema = @Schema(implementation = ApiError.class))),
+            @ApiResponse(responseCode = "404", description = "Pet does not exit / PetType not found",
+                    content = @Content(schema = @Schema(implementation = ApiError.class)))
+    })
+
+    public void updatePet(@PathVariable Integer petId ,@RequestBody @Valid PetDto petDto) {
+petService.updatePet(petId, petDto);
+    }
+
+
 }

@@ -34,4 +34,8 @@ public interface PetMapper {
     default String map(PetType petType) {
         return petType != null ? petType.getTypeName() : null;
     }
+
+    @InheritConfiguration(name = "toPet")
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Pet updatePet(PetDto petDto, @MappingTarget Pet pet);
 }
