@@ -46,17 +46,17 @@ public class PetController {
 
     @PutMapping("/pet/{petId}")
     @Operation(summary = "Updates a pet", description = "if there are any null value fields, those wont`t get updated")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "Invalid request body: payload validation failed",
-                    content = @Content(schema = @Schema(implementation = ApiError.class))),
-            @ApiResponse(responseCode = "404", description = "Pet does not exit / PetType not found",
-                    content = @Content(schema = @Schema(implementation = ApiError.class)))
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "400", description = "Invalid request body: payload validation failed", content = @Content(schema = @Schema(implementation = ApiError.class))), @ApiResponse(responseCode = "404", description = "Pet does not exit / PetType not found", content = @Content(schema = @Schema(implementation = ApiError.class)))})
 
-    public void updatePet(@PathVariable Integer petId ,@RequestBody @Valid PetDto petDto) {
-petService.updatePet(petId, petDto);
+    public void updatePet(@PathVariable Integer petId, @RequestBody @Valid PetDto petDto) {
+        petService.updatePet(petId, petDto);
     }
 
+    @DeleteMapping("/pet/{petId}")
+    @Operation(summary = "Deletes a pet by its ID", description = "Also checks if any sales record exists with this pet. If yes, sale record is deleted")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "404", description = "Pet does not exist", content = @Content(schema = @Schema(implementation = ApiError.class))),})
+    public void deletePet(@PathVariable Integer petId) {
+        petService.deletePet(petId);
+    }
 
 }

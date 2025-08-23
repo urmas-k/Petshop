@@ -1,17 +1,19 @@
 package eu.urmas.petshop.service.pet;
 
+import eu.urmas.petshop.controller.pet.dto.PetDto;
 import eu.urmas.petshop.controller.pet.dto.PetInfo;
 import eu.urmas.petshop.infrastructure.rest.error.Error;
 import eu.urmas.petshop.infrastructure.rest.exception.DataNotFoundException;
 import eu.urmas.petshop.persistence.pet.Pet;
-import eu.urmas.petshop.controller.pet.dto.PetDto;
 import eu.urmas.petshop.persistence.pet.PetMapper;
 import eu.urmas.petshop.persistence.pet.PetRepository;
 import eu.urmas.petshop.persistence.pettype.PetType;
 import eu.urmas.petshop.persistence.pettype.PetTypeRepository;
+import eu.urmas.petshop.persistence.sale.SaleRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class PetService {
     private final PetRepository petRepository;
     private final PetMapper petMapper;
     private final PetTypeRepository petTypeRepository;
+    private final SaleRepository saleRepository;
 
     public void addPet(PetDto petDto) {
         PetType petType = getValidPetType(petDto.getPetType());
@@ -48,13 +51,20 @@ public class PetService {
         petRepository.save(pet);
     }
 
+    @Transactional
+    public void deletePet(Integer petId) {
+        Pet pet = getValidPet(petId);
+        saleRepository.findSaleBy(pet).ifPresent(sale -> saleRepository.delete(sale));
+        petRepository.delete(pet);
+    }
+
     private Pet getValidPet(Integer petId) {
-        return petRepository.findById(petId)
-                .orElseThrow(() -> new DataNotFoundException(Error.NO_PET_EXISTS.getMessage()));
+        return petRepository.findById(petId).orElseThrow(() -> new DataNotFoundException(Error.NO_PET_EXISTS.getMessage()));
     }
 
     private PetType getValidPetType(String petTypeName) {
-        return petTypeRepository.findPetTypeBy(petTypeName)
-                .orElseThrow(() -> new DataNotFoundException(Error.NO_PET_TYPE_EXISTS.getMessage()));
+        return petTypeRepository.findPetTypeBy(petTypeName).orElseThrow(() -> new DataNotFoundException(Error.NO_PET_TYPE_EXISTS.getMessage()));
     }
+
+
 }
