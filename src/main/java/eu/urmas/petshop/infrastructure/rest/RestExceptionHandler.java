@@ -17,46 +17,35 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
- * This class watches for exceptions thrown by REST controllers
- * and turns them into friendly JSON error responses.
+ * This class watches for exceptions thrown by REST controllers and turns them into friendly JSON
+ * error responses.
  */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
-     * Handles cases where a user is not allowed to perform an action.
-     * Produces a 403 Forbidden response with an error message and request path.
+     * Handles cases where a user is not allowed to perform an action. Produces a 403 Forbidden
+     * response with an error message and request path.
      */
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ApiError> handleForbiddenException(ForbiddenException exception, HttpServletRequest request) {
 
-        ApiError apiError = new ApiError();
-        apiError.setStatus(HttpStatus.FORBIDDEN);
-        apiError.setMessage(exception.getMessage());
-        apiError.setPath(request.getRequestURI());
-
-        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
+        return buildErrorResponse(HttpStatus.FORBIDDEN, exception.getMessage(), request.getRequestURI());
     }
 
     /**
-     * Handles cases where requested data cannot be found.
-     * Produces a 404 Not Found response with an error message and request path.
+     * Handles cases where requested data cannot be found. Produces a 404 Not Found response with an
+     * error message and request path.
      */
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ApiError> handleDataNotFoundException(DataNotFoundException exception, HttpServletRequest request) {
 
-        ApiError apiError = new ApiError();
-        apiError.setStatus(HttpStatus.NOT_FOUND);
-        apiError.setMessage(exception.getMessage());
-        apiError.setPath(request.getRequestURI());
-
-        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+        return buildErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request.getRequestURI());
     }
 
     /**
-     * Handles validation failures on method arguments.
-     * Pulls out the first validation error, then returns a 400 Bad Request
-     * response with a simple message and the request path.
+     * Handles validation failures on method arguments. Pulls out the first validation error, then
+     * returns a 400 Bad Request response with a simple message and the request path.
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatusCode status, WebRequest webRequest) {
@@ -66,12 +55,24 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ServletWebRequest servletReq = (ServletWebRequest) webRequest;
         String path = servletReq.getRequest().getRequestURI();
 
-        ApiError apiError = new ApiError();
-        apiError.setStatus(HttpStatus.BAD_REQUEST);
-        apiError.setMessage(firstError.getField() + ": " + firstError.getDefaultMessage());
-        apiError.setPath(path);
-
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return buildErrorResponseObject(HttpStatus.BAD_REQUEST, firstError.getField() + ": " + firstError.getDefaultMessage(), path);
     }
 
+    private ApiError buildApiError(HttpStatus status, String message, String path) {
+        ApiError apiError = new ApiError();
+        apiError.setStatus(status);
+        apiError.setMessage(message);
+        apiError.setPath(path);
+        return apiError;
+    }
+
+    private ResponseEntity<ApiError> buildErrorResponse(HttpStatus status, String message, String path) {
+        ApiError apiError = buildApiError(status, message, path);
+        return new ResponseEntity<>(apiError, status);
+    }
+
+    private ResponseEntity<Object> buildErrorResponseObject(HttpStatus status, String message, String path) {
+        ApiError apiError = buildApiError(status, message, path);
+        return new ResponseEntity<>(apiError, status);
+    }
 }

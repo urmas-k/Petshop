@@ -1,8 +1,8 @@
 package eu.urmas.petshop.controller.pet;
 
+import eu.urmas.petshop.controller.pet.dto.PetDto;
 import eu.urmas.petshop.controller.pet.dto.PetInfo;
 import eu.urmas.petshop.infrastructure.rest.error.ApiError;
-import eu.urmas.petshop.controller.pet.dto.PetDto;
 import eu.urmas.petshop.service.pet.PetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,18 +22,21 @@ public class PetController {
     private final PetService petService;
 
     @PostMapping("/pet")
-    @Operation(summary = "Adds a pet", description = "Adds a pet. Throws error ’PetType not found’ if petType is not found from system")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "400", description = "PetType not foud", content = @Content(schema = @Schema(implementation = ApiError.class))),
-
+    @Operation(summary = "Adds a pet", description = "Adds a pet. Throws error 'PetType not found' if petType is not found in the system")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "PetType not found", content = @Content(schema = @Schema(implementation = ApiError.class)))
     })
     public void addPet(@RequestBody @Valid PetDto petDto) {
         petService.addPet(petDto);
-
     }
 
     @GetMapping("/pet/{petId}")
-    @Operation(summary = "Finds a pet by its ID", description = "Finds a pet by its ID, if no match is found then error is thrown")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "ok"), @ApiResponse(responseCode = "404", description = "Pet does not exist", content = @Content(schema = @Schema(implementation = ApiError.class)))})
+    @Operation(summary = "Finds a pet by its ID", description = "Finds a pet by its ID; if no match is found then an error is thrown")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "Pet does not exist", content = @Content(schema = @Schema(implementation = ApiError.class)))
+    })
     public PetDto getPet(@PathVariable Integer petId) {
         return petService.findPet(petId);
     }
@@ -45,18 +48,23 @@ public class PetController {
     }
 
     @PutMapping("/pet/{petId}")
-    @Operation(summary = "Updates a pet", description = "if there are any null value fields, those wont`t get updated")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "400", description = "Invalid request body: payload validation failed", content = @Content(schema = @Schema(implementation = ApiError.class))), @ApiResponse(responseCode = "404", description = "Pet does not exit / PetType not found", content = @Content(schema = @Schema(implementation = ApiError.class)))})
-
+    @Operation(summary = "Updates a pet", description = "If any fields are null, those fields won't be updated")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "Invalid request body: payload validation failed", content = @Content(schema = @Schema(implementation = ApiError.class))),
+            @ApiResponse(responseCode = "404", description = "Pet does not exist / PetType not found", content = @Content(schema = @Schema(implementation = ApiError.class)))
+    })
     public void updatePet(@PathVariable Integer petId, @RequestBody @Valid PetDto petDto) {
         petService.updatePet(petId, petDto);
     }
 
     @DeleteMapping("/pet/{petId}")
-    @Operation(summary = "Deletes a pet by its ID", description = "Also checks if any sales record exists with this pet. If yes, sale record is deleted")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "404", description = "Pet does not exist", content = @Content(schema = @Schema(implementation = ApiError.class))),})
+    @Operation(summary = "Deletes a pet by its ID", description = "Also checks if any sales record exists with this pet. If yes, the sale record is deleted")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "Pet does not exist", content = @Content(schema = @Schema(implementation = ApiError.class)))
+    })
     public void deletePet(@PathVariable Integer petId) {
         petService.deletePet(petId);
     }
-
 }

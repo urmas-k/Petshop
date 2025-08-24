@@ -37,5 +37,4 @@ public class Sale {
     @NotNull
     @Column(name = "SALE_PRICE", nullable = false, precision = 10, scale = 2)
     private BigDecimal salePrice;
-
 }

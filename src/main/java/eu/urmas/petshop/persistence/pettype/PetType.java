@@ -20,5 +20,4 @@ public class PetType {
     @NotNull
     @Column(name = "NAME", nullable = false, length = 50)
     private String typeName;
-
 }

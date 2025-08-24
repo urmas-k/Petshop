@@ -13,5 +13,4 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class PetInfo extends PetDto implements Serializable {
     private Integer petId;
-
 }

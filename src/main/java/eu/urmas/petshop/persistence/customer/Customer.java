@@ -29,5 +29,4 @@ public class Customer {
     @Size(max = 20)
     @Column(name = "PHONE_NUMBER", length = 20)
     private String phoneNumber;
-
 }

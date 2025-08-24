@@ -16,10 +16,7 @@ public interface PetMapper {
     @Mapping(source = "birthDate", target = "birthDate")
     PetDto toPetDto(Pet pet);
 
-    @Mapping(source = "petType", target = "petType")
-    @Mapping(source = "name", target = "petName")
-    @Mapping(source = "price", target = "price")
-    @Mapping(source = "birthDate", target = "birthDate")
+    @InheritConfiguration(name = "toPetDto")
     @Mapping(source = "id", target = "petId")
     PetInfo toPetInfo(Pet pet);
 

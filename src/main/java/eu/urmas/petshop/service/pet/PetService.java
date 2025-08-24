@@ -45,16 +45,16 @@ public class PetService {
 
     public void updatePet(Integer petId, @Valid PetDto petDto) {
         Pet pet = getValidPet(petId);
-        PetType PetType = getValidPetType(petDto.getPetType());
+        PetType petType = getValidPetType(petDto.getPetType());
         petMapper.updatePet(petDto, pet);
-        pet.setPetType(PetType);
+        pet.setPetType(petType);
         petRepository.save(pet);
     }
 
     @Transactional
     public void deletePet(Integer petId) {
         Pet pet = getValidPet(petId);
-        saleRepository.findSaleBy(pet).ifPresent(sale -> saleRepository.delete(sale));
+        saleRepository.findSaleBy(pet).ifPresent(saleRepository::delete);
         petRepository.delete(pet);
     }
 
@@ -65,6 +65,4 @@ public class PetService {
     private PetType getValidPetType(String petTypeName) {
         return petTypeRepository.findPetTypeBy(petTypeName).orElseThrow(() -> new DataNotFoundException(Error.NO_PET_TYPE_EXISTS.getMessage()));
     }
-
-
 }

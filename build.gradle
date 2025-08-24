@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.0'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 group = 'eu.itcrafters'
 version = '0.0.1-SNAPSHOT'
@@ -40,4 +41,19 @@ compileJava {
 }
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// Code formatting and auto-indentation
+spotless {
+    java {
+        // Format all Java sources
+        target 'src/**/*.java'
+        // Google Java Format ensures consistent indentation and style
+        googleJavaFormat('1.17.0').reflowLongStrings()
+    }
+    format('misc') {
+        target '*.gradle', 'gradle/**/*.gradle', '*.md', '.gitignore'
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
