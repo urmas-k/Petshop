@@ -5,15 +5,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
+/**
+ * Configuration for running an HSQLDB TCP server so external tools (e.g. IntelliJ Database tool)
+ * can connect via jdbc:hsqldb:hsql://localhost:9001/mydb.
+ *
+ * Enabled only when the 'hsql-server' Spring profile is active to avoid unintended server startup.
+ */
 @Configuration
+@Profile("hsql-server")
 public class HsqlServerConfig {
   private static final Logger log = LoggerFactory.getLogger(HsqlServerConfig.class);
 
-  /**
-   * This bean starts an HSQLDB Server on port 9001, backed by an in-memory database named "mydb".
-   * IntelliJ can then connect to jdbc:hsqldb:hsql://localhost:9001/mydb.
-   */
   @Bean(initMethod = "start", destroyMethod = "stop")
   public Server hsqlServer() {
     Server server = new Server();

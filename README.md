@@ -38,19 +38,59 @@ Prerequisites: Java 21 installed. No external database is required.
 3) Sample health check (if actuator is enabled by your profile):
 - http://localhost:8080/actuator/health
 
+## Available Endpoints
+Base URL: http://localhost:8080
+
+- POST /pet
+  - Description: Add a pet
+  - Body (application/json): PetDto
+  - Responses: 200 OK, 400 PetType not found
+
+- GET /pet/{petId}
+  - Description: Get a pet by ID
+  - Responses: 200 OK (PetDto), 404 Not Found
+
+- GET /pets
+  - Description: List all pets
+  - Responses: 200 OK (array of PetInfo)
+
+- PUT /pet/{petId}
+  - Description: Update a pet (null fields are ignored)
+  - Body (application/json): PetDto
+  - Responses: 200 OK, 400 Validation error, 404 Not Found / PetType not found
+
+- DELETE /pet/{petId}
+  - Description: Delete a pet by ID (also deletes related sale entries, if any)
+  - Responses: 200 OK, 404 Not Found
+
+For interactive docs and request/response schemas, use Swagger UI.
+
+## Project Structure
+- src/main/java
+  - eu.urmas.petshop
+    - PetshopApplication.java (Spring Boot entry point)
+    - controller/pet (REST controller, DTOs)
+    - service/pet (business logic)
+    - persistence (JPA entities, repositories, mappers)
+    - infrastructure (DB helpers, REST errors, exception handling)
+- src/main/resources
+  - application.properties (in-memory HSQLDB config)
+  - schema.sql, data.sql (DB init scripts)
+- docs/ERD.png (entity relationship diagram)
+
 ## Non-standard configuration / Notes
 - In-memory HSQLDB with SQL init:
   - Spring is configured to use an in-memory HSQLDB (jdbc:hsqldb:mem:mydb).
   - Hibernate DDL auto is disabled and schema/data are loaded via Spring SQL initializer (see application.properties, schema.sql, data.sql).
-- Embedded HSQLDB server for IDE access:
-  - A helper bean starts an HSQLDB TCP server on port 9001 at startup so IDEs (e.g., IntelliJ) can connect and inspect data while the app runs.
+- Optional HSQLDB TCP server for IDE access:
+  - Activate with Spring profile `hsql-server` to expose the in-memory DB over TCP on port 9001.
   - Connection details (also commented in application.properties):
     - User: `sa`
     - URL: `jdbc:hsqldb:hsql://localhost:9001/mydb`
     - Password: empty
 - Ports:
   - API: 8080
-  - HSQLDB server (for IDE connection): 9001
+  - HSQLDB server (for IDE connection): 9001 (only when profile `hsql-server` is active)
 
 ## Running tests
 ```bash
